@@ -2,16 +2,17 @@
 
 ## About
 [Telegraf](https://www.influxdata.com/time-series-platform/telegraf/) is an open-source collector for various metrics.
-These metric are usually stored in an [Influx database](https://www.influxdata.com/products/influxdb-overview/).
-So far, there is no explicit support for [BTRFS](https://btrfs.wiki.kernel.org/index.php/Main_Page) filesystems, only generic data collected by the `disk` plugin.
+These metrics are usually stored in an [Influx database](https://www.influxdata.com/products/influxdb-overview/).
+So far, there is no explicit support for [BTRFS](https://btrfs.wiki.kernel.org/index.php/Main_Page) filesystems. 
+Only generic data can be collected by the `disk` plugin.
 
-This Python script collectss data about BTRFS from a linux system by reading information from `/sys/fs/btrfs/`.
+This Python script collects data about BTRFS from a linux system by reading information from `/sys/fs/btrfs/`.
 It does not require `root` rights to do so (and can be run directly from the telegraf service).
-The output consists of data items in Influx [Line Protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/) format, which can be directly used to insert the data influx databases.
+The output consists of data items in Influx [Line Protocol](https://v2.docs.influxdata.com/v2.0/reference/syntax/line-protocol/) format, which can be directly used to insert the data into influx databases.
 
 ## What data is collected
 Currently, we evaluate only allocation specific data.
-This is similar to what can be queries by `btrfs filesystem df /mnt`.
+This is similar to what can be queried by `btrfs filesystem df /mnt`.
 Colleting more non-root-accessible data is planned.
 The following data items are collected for each allocation type (data, metadata, system):
 * bytes_used
@@ -31,13 +32,13 @@ btrfs,uuid=25c1fbee-f3ef-4b71-a925-55b8e7667968,label=DATA,profile=raid1,type=sy
 https://godoc.org/github.com/prometheus/procfs/btrfs
 
 ## Usage
-1. Copy `btrfs-collector.py` to a location accessible by telgraf. For example `/etc/telegraf/btrfs-collector.py`.
+1. Copy `btrfs-collector.py` to a location accessible by telegraf. For example `/etc/telegraf/btrfs-collector.py`.
 2. Update `/etc/telegraf/telegraf.conf` to call the script:
 
 ```
     [[inputs.exec]]
     commands = [
-        "python3 /etc/telegraf/btrfs-collector.py"
+        "/etc/telegraf/btrfs-collector.py"
         ]
     timeout = "5s"
     data_format = "influx"
