@@ -51,11 +51,15 @@ def processFilesystem(uuid):
     # read allocation data
     for atype in ['data', 'metadata', 'system']:
         try:
-            #TODO: detect data profile
-            tagset["profile"] = "raid1"
             tagset["type"] = atype
-
             profilepath = os.path.join(path, "allocation", atype)
+
+            #detect data profile (there is a subfolder named after the profile)
+            del tagset["profile"]
+            for profile in ['single', 'dup', 'raid0', 'raid1', 'raid10', 'raid5', 'raid6']:
+                if os.path.isdir(os.path.join(profilepath, profile)):
+                    tagset["profile"] = profile
+
             values = {
                 "bytes_used":  int(readFile(os.path.join(profilepath, "bytes_used"))),
                 "total_bytes": int(readFile(os.path.join(profilepath, "total_bytes"))),
