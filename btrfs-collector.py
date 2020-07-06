@@ -62,6 +62,7 @@ def processFilesystem(uuid):
 
             values = {
                 "bytes_used":  int(readFile(os.path.join(profilepath, "bytes_used"))),
+                "bytes_readonly": int(readFile(os.path.join(profilepath, "bytes_readonly"))),
                 "total_bytes": int(readFile(os.path.join(profilepath, "total_bytes"))),
                 "disk_total":  int(readFile(os.path.join(profilepath, "disk_total"))),
                 "disk_used":   int(readFile(os.path.join(profilepath, "disk_used")))
