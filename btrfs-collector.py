@@ -26,7 +26,18 @@ def makeLineProtocol(measurement, tags, values):
     return measurementid + " " + valuelist
 
 def emitLine(tagset, values):
+    if len(values) == 0:
+        return
     print(makeLineProtocol(measurement, tagset, values))
+
+def readExistingValues(fileset, path):
+    result = {}
+    for name, filename in fileset.items():
+        try:
+            result[name] = int(readFile(os.path.join(path, filename)))
+        except:
+            pass
+    return result
 
 def processFilesystem(uuid):
     path = os.path.join(basedir, uuid)
@@ -34,16 +45,20 @@ def processFilesystem(uuid):
     tagset = {"uuid": uuid}
     tagset["label"] = readFile(os.path.join(path, "label"))
 
-    values = {}
+    # read global attributes
+    files = {
+        'generation': 'generation'
+    }
+    values = readExistingValues(files, path)
+    emitLine(tagset, values)
 
     # read global reserve
     try:
         tagset["profile"] = "single"
         tagset["type"] = "globalreserve"
         profilepath = os.path.join(path, "allocation")
-        values = {
-            "total_bytes": int(readFile(os.path.join(profilepath, "global_rsv_size")))
-        }
+        global_files = { 'total_bytes': 'global_rsv_size' }
+        values = readExistingValues(global_files, profilepath)
         emitLine(tagset, values)
     except:
         pass
@@ -60,13 +75,15 @@ def processFilesystem(uuid):
                 if os.path.isdir(os.path.join(profilepath, profile)):
                     tagset["profile"] = profile
 
-            values = {
-                "bytes_used":  int(readFile(os.path.join(profilepath, "bytes_used"))),
-                "bytes_readonly": int(readFile(os.path.join(profilepath, "bytes_readonly"))),
-                "total_bytes": int(readFile(os.path.join(profilepath, "total_bytes"))),
-                "disk_total":  int(readFile(os.path.join(profilepath, "disk_total"))),
-                "disk_used":   int(readFile(os.path.join(profilepath, "disk_used")))
+            allocation_files = {
+                "bytes_used":     "bytes_used",
+                "bytes_readonly": "bytes_readonly",
+                "total_bytes":    "total_bytes",
+                "disk_total":     "disk_total",
+                "disk_used":      "disk_used",
             }
+            values = readExistingValues(allocation_files, profilepath)
+
             emitLine(tagset, values)
         except:
             pass
