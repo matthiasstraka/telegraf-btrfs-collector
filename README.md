@@ -32,13 +32,13 @@ btrfs,uuid=25c1fbee-f3ef-4b71-a925-55b8e7667968,label=DATA,profile=raid1,type=sy
 https://godoc.org/github.com/prometheus/procfs/btrfs
 
 ## Usage
-1. Copy `btrfs-collector.py` to a location accessible by telegraf. For example `/etc/telegraf/btrfs-collector.py`.
+1. Copy `btrfs_collector.py` to a location accessible by telegraf. For example `/etc/telegraf/btrfs_collector.py`.
 2. Update `/etc/telegraf/telegraf.conf` to call the script:
 
 ```
     [[inputs.exec]]
     commands = [
-        "/etc/telegraf/btrfs-collector.py"
+        "/etc/telegraf/btrfs_collector.py"
         ]
     timeout = "5s"
     data_format = "influx"
