@@ -21,7 +21,7 @@ def is_filesystem(folder_name):
 
 def read_file(path_name):
     ''' Read a single line file '''
-    with open(path_name, "r") as handle:
+    with open(path_name, "r", encoding="utf-8") as handle:
         return handle.read().rstrip('\n')
 
 def make_line_protocol(measurement, tags, values):
